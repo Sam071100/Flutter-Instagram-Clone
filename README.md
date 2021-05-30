@@ -42,6 +42,21 @@ Hey, everyone. Here I will build the fully functional working instagram clone wi
  - intl: ^0.17.0 //Date formater package
  - timeago: ^3.0.2 // Calculates the difference in time between two specific dates and returns the string
  - uuid: ^3.0.4 //For generating unique identifier for photos to be stored in firebase storage
+
+ ## Firebase Setup
+ - Open 'https://console.firebase.google.com' and create new project
+ - Write the name of your project, enable google analytics, select default account for Firebase and create project.
+ - Click add App and select android app
+  1. Register the app by entering the android package name which you can find under the android folder, then app and then build.gradle and then inside the defaultConfig you will find the applicationId which is the android package name for your app.
+  2. Leave everything default and click Register app.
+  3. Download google-services.json and drag it to the app folder in the android folder and ensure the name of the file is correct.
+  4. Back in the build.gradle of app layer, inside the defaultConfig make the 'miniSdkVersion 21' and add 'multiDexEnabled true' as this is neccessary to run the Firebase on the android app and continue the setup in the firebase console.
+  5. Follow the instructions on that page and act accordingly.
+  6. For this project, I am going to use this four products. They are: Analytics, Authentication, Cloud Firestore and Cloud Storage. Follow the Firebase docs and add this to build.gradle of app layer in dependencies
+  7. Now we are good to go, then finally go back to the Firebase console and select Authentication and under that enable the Email authentication.
+  8. Now setting up the Cloud Firestore, create database and start in test mode and then select the Cloud Firestore location.
+  9. Go the rules tab and update the rules as 'allow read, write : if reuest.auth.uid !=null;' that implies -->Whenever the user tries to read and write to our database we check if the request has the valid userid. If the userid is not valid then the user cannot read or write to the database.  
+  10. Storage is where we are going to store all our users post and profile images.
   ## Getting Started
 
 This project is a starting point for a Flutter application.
