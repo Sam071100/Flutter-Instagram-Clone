@@ -56,7 +56,7 @@ Hey, everyone. Here I will build the fully functional working instagram clone wi
   7. Now we are good to go, then finally go back to the Firebase console and select Authentication and under that enable the Email authentication.
   8. Now setting up the Cloud Firestore, create database and start in test mode and then select the Cloud Firestore location.
   9. Go the rules tab and update the rules as 'allow read, write : if reuest.auth.uid !=null;' that implies -->Whenever the user tries to read and write to our database we check if the request has the valid userid. If the userid is not valid then the user cannot read or write to the database.  
-  10. Storage is where we are going to store all our users post and profile images.
+  10. Storage is where I am going to store all our users post and profile images.
   ## Getting Started
 
 This project is a starting point for a Flutter application.
