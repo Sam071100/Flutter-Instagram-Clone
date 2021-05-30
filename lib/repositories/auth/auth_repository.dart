@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/services.dart';
+import 'package:instagram_clone/config/paths.dart';
+import 'package:instagram_clone/models/models.dart';
 import 'package:instagram_clone/repositories/repositories.dart';
 import 'package:meta/meta.dart';
 
@@ -14,7 +16,6 @@ class AuthRepository extends BaseAuthRepository {
   })  : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance,
         _firebaseAuth = firebaseAuth ?? auth.FirebaseAuth.instance;
   @override
-  // TODO: implement user
   Stream<auth.User> get user => _firebaseAuth.userChanges();
 
   @override
@@ -23,8 +24,24 @@ class AuthRepository extends BaseAuthRepository {
     @required String email,
     @required String password,
   }) async {
-    // TODO: implement signupWithEmailAndPassword
-    throw UnimplementedError();
+    try {
+      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = credential.user;
+      _firebaseFirestore.collection(Paths.users).doc(user.uid).set({
+        'username': username,
+        'email': email,
+        'followers': 0,
+        'following': 0,
+      });
+      return user;
+    } on auth.FirebaseAuthException catch (err) {
+      throw Failure(code: err.code, message: err.message);
+    } on PlatformException catch (err) {
+      throw Failure(code: err.code, message: err.message);
+    }
   }
 
   @override
@@ -33,9 +50,16 @@ class AuthRepository extends BaseAuthRepository {
     @required String password,
   }) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password,)
-    } on auth.FirebaseAuthException catch (err) {}
-    on PlatformException catch (err) {}
+      final credential = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return credential.user;
+    } on auth.FirebaseAuthException catch (err) {
+      throw Failure(code: err.code, message: err.message);
+    } on PlatformException catch (err) {
+      throw Failure(code: err.code, message: err.message);
+    }
   }
 
   @override
