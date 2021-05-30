@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/screens/screens.dart';
 
 class CustomRouter {
   static Route onGenerateRoute(RouteSettings settings) {
@@ -10,6 +11,8 @@ class CustomRouter {
           builder: (_) => const Scaffold(),
         );
         break;
+      case SplashScreen.routeName:
+        return SplashScreen.route();
       default:
         return _errorRoute();
     }
