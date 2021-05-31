@@ -1,13 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:instagram_clone/blocs/auth/auth_bloc.dart';
+import 'package:instagram_clone/blocs/blocs.dart';
 import 'package:instagram_clone/config/custom_router.dart';
-import 'package:instagram_clone/repositories/auth/auth_repository.dart';
+import 'package:instagram_clone/repositories/repositories.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  Bloc.observer = SimpleBlocObserver();
   runApp(MyApp());
 }
 
