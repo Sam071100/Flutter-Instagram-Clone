@@ -57,6 +57,11 @@ Hey, everyone. Here I will build the fully functional working instagram clone wi
   8. Now setting up the Cloud Firestore, create database and start in test mode and then select the Cloud Firestore location.
   9. Go the rules tab and update the rules as 'allow read, write : if reuest.auth.uid !=null;' that implies -->Whenever the user tries to read and write to our database we check if the request has the valid userid. If the userid is not valid then the user cannot read or write to the database.  
   10. Storage is where I am going to store all our users post and profile images.
+
+  ## Business Logic Component
+  - BLoC stands for Business Logic Component and is a state management tool that decouples our business logic from our UI.
+  - The major reason for having proper state management is so we can easily scale or maintain our app and test our code. When our UI and business logic our intertwined, it is a lot more difficult to add features and the files become extremely cluttered.
+  - Example, our user sends in event to BLoC by taking some action in the app. Actions could be things like tapping a button or scrolling to the bottom of a list. An event called Get Data is sent to the BLoC. The BLoC then takes in this event and yield the state called loading. Our UI then knows to show the user a loading indicator. The BLoC sent a request to the API or database to retrieve data. When the response comes back to the BLoC, the BLoC yields a new state called Loaded Contained Retrieve data. Since the BLoC now has a loaded state, our UI reflects the loaded state by showing the retrieved data to our user. If we were to put all of this logic into our UI, it would get pretty messy with all the set states and only more complicated as we add more logic. This is why separating our business logic from a UI is essential for readability and scaling our app.
   ## Getting Started
 
 This project is a starting point for a Flutter application.
