@@ -3,3 +3,5 @@
 //And in the main.dart we have to just import this screen.dart file instead of all the screens which saves lots of time and make the debugging of the code easier.
 
 export 'splash/splash_screen.dart';
+export 'login/login_screen.dart';
+export 'nav/nav_screen.dart';
