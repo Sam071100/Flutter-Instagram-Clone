@@ -1,23 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/repositories/auth/auth_repository.dart';
-import 'package:instagram_clone/screens/login/cubit/login_cubit.dart';
-import 'package:instagram_clone/screens/signup/signup_screen.dart';
+import 'package:instagram_clone/screens/signup/cubit/signup_cubit.dart';
 import 'package:instagram_clone/widgets/widgets.dart';
 
-class LoginScreen extends StatelessWidget {
-  static const String routeName = '/login';
+class SignupScreen extends StatelessWidget {
+  static const String routeName = '/signup';
 
-  // we want the login screen to slide over the splash screen so instead of using material page route we have to use the Page Route builder in order to make the screen appear on top of the splash screen
+  // we want the Signup screen to slide over the splash screen so instead of using material page route we have to use the Page Route builder in order to make the screen appear on top of the splash screen
   static Route route() {
-    return PageRouteBuilder(
+    return MaterialPageRoute(
       settings: const RouteSettings(name: routeName),
-      transitionDuration: const Duration(seconds: 0),
-      pageBuilder: (context, _, __) => BlocProvider<LoginCubit>(
+      builder: (context) => BlocProvider<SignupCubit>(
         create: (_) =>
-            LoginCubit(authRepository: context.read<AuthRepository>()),
-        child: LoginScreen(),
+            SignupCubit(authRepository: context.read<AuthRepository>()),
+        child: SignupScreen(),
       ),
     );
   }
@@ -32,13 +29,14 @@ class LoginScreen extends StatelessWidget {
           false, // Prohibits the users from poping the screen
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: BlocConsumer<LoginCubit, LoginState>(
+        child: BlocConsumer<SignupCubit, SignupState>(
           listener: (context, state) {
-            if (state.status == LoginStatus.error) {
+            if (state.status == SignupStatus.error) {
               showDialog(
                 context: context,
-                builder: (context) =>
-                    ErrorDialog(content: state.failure.message),
+                builder: (context) => ErrorDialog(
+                  content: state.failure.message,
+                ),
               );
             }
           },
@@ -72,9 +70,21 @@ class LoginScreen extends StatelessWidget {
                               height: 12.0,
                             ),
                             TextFormField(
+                              decoration: InputDecoration(hintText: 'Username'),
+                              onChanged: (value) => context
+                                  .read<SignupCubit>()
+                                  .usernameChanged(value),
+                              validator: (value) => value.trim().isEmpty
+                                  ? 'Please enter Username'
+                                  : null,
+                            ),
+                            const SizedBox(
+                              height: 16.0,
+                            ),
+                            TextFormField(
                               decoration: InputDecoration(hintText: 'Email'),
                               onChanged: (value) => context
-                                  .read<LoginCubit>()
+                                  .read<SignupCubit>()
                                   .emailChanged(value),
                               validator: (value) => !value.contains('@')
                                   ? 'Please enter a valid email'
@@ -87,7 +97,7 @@ class LoginScreen extends StatelessWidget {
                               decoration: InputDecoration(hintText: 'Password'),
                               obscureText: true,
                               onChanged: (value) => context
-                                  .read<LoginCubit>()
+                                  .read<SignupCubit>()
                                   .passwordChanged(value),
                               validator: (value) => value.length < 6
                                   ? 'Must be atleast 6 characters.'
@@ -99,27 +109,26 @@ class LoginScreen extends StatelessWidget {
                             ElevatedButton(
                               onPressed: () => _submitForm(
                                 context,
-                                state.status == LoginStatus.submitting,
+                                state.status == SignupStatus.submitting,
                               ),
                               style: ElevatedButton.styleFrom(
                                 elevation: 1.0,
                                 primary: Theme.of(context).primaryColor,
                                 onPrimary: Colors.white,
                               ),
-                              child: Text("Log In"),
+                              child: Text("Sign Up"),
                             ),
                             const SizedBox(
                               height: 12.0,
                             ),
                             ElevatedButton(
-                              onPressed: () => Navigator.of(context)
-                                  .pushNamed(SignupScreen.routeName),
+                              onPressed: () => Navigator.of(context).pop(),
                               style: ElevatedButton.styleFrom(
                                 elevation: 1.0,
                                 primary: Colors.grey[200],
                                 onPrimary: Colors.black,
                               ),
-                              child: Text("No account? Sign up"),
+                              child: Text("back to Login"),
                             ),
                           ],
                         ),
@@ -137,7 +146,7 @@ class LoginScreen extends StatelessWidget {
 
   void _submitForm(BuildContext context, bool isSubmitting) {
     if (_formKey.currentState.validate() && !isSubmitting) {
-      context.read<LoginCubit>().logInWithCredentials();
+      context.read<SignupCubit>().signupWithCredentials();
     }
   }
-} // LogIn screen state will be handled by Login cubit
+} // Signup screen state will be handled by Signup cubit
