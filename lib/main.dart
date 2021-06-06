@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/blocs/blocs.dart';
 import 'package:instagram_clone/config/custom_router.dart';
 import 'package:instagram_clone/repositories/repositories.dart';
+import 'package:instagram_clone/screens/screens.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
           ),
           // We are using the named Routes and because of the complex navigation in the app I am going to make a seprate config folder
           onGenerateRoute: CustomRouter.onGenerateRoute,
-          initialRoute: '/',
+          initialRoute: SplashScreen.routeName,
         ),
       ),
     );
