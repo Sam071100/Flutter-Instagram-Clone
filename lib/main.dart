@@ -19,11 +19,17 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    AuthRepository().logOut();
+    // AuthRepository().logOut();
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthRepository>(
           create: (_) => AuthRepository(),
+        ),
+        RepositoryProvider<UserRepository>(
+          create: (_) => UserRepository(),
+        ),
+        RepositoryProvider<StorageRepository>(
+          create: (_) => StorageRepository(),
         ),
       ],
       child: MultiBlocProvider(

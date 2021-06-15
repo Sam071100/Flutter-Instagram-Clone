@@ -1,0 +1,72 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:instagram_clone/blocs/auth/auth_bloc.dart';
+import 'package:instagram_clone/config/custom_router.dart';
+import 'package:instagram_clone/enums/enums.dart';
+import 'package:instagram_clone/repositories/repositories.dart';
+import 'package:instagram_clone/screens/profile/bloc/profile_bloc.dart';
+import 'package:instagram_clone/screens/screens.dart';
+
+class TabNavigator extends StatelessWidget {
+  static const String tabNavigatorRoot = '/';
+  final GlobalKey<NavigatorState> navigatorKey;
+  final BottomNavItem item;
+
+  const TabNavigator({
+    Key key,
+    @required this.navigatorKey,
+    @required this.item,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final routeBuilders = _routeBuilders();
+    return Navigator(
+      key: navigatorKey,
+      initialRoute: tabNavigatorRoot,
+      onGenerateInitialRoutes: (_, intialRoute) {
+        return [
+          MaterialPageRoute(
+            settings: RouteSettings(name: tabNavigatorRoot),
+            builder: (context) => routeBuilders[intialRoute](context),
+          )
+        ];
+      },
+      onGenerateRoute: CustomRouter.onGeneratedNestedRoute,
+    );
+  }
+
+  Map<String, WidgetBuilder> _routeBuilders() {
+    return {tabNavigatorRoot: (context) => _getScreen(context, item)};
+  }
+
+  Widget _getScreen(BuildContext context, BottomNavItem item) {
+    switch (item) {
+      case BottomNavItem.feed:
+        return FeedScreen();
+        break;
+      case BottomNavItem.search:
+        return SearchScreen();
+        break;
+      case BottomNavItem.create:
+        return CreatePostScreen();
+        break;
+      case BottomNavItem.notifications:
+        return NotificationsScreen();
+        break;
+      case BottomNavItem.profile:
+        return BlocProvider(
+          create: (_) => ProfileBloc(
+              userRepository: context.read<UserRepository>(),
+              authBloc: context.read<AuthBloc>())
+            ..add(
+              ProfileLoadUser(userId: context.read<AuthBloc>().state.user.uid),
+            ),
+          child: ProfileScreen(),
+        );
+        break;
+      default:
+        return Scaffold();
+    }
+  }
+}

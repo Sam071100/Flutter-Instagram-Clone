@@ -38,7 +38,7 @@ class LoginScreen extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (context) =>
-                    ErrorDialog(content: state.failure.message),
+                    ErrorDialog(title: "Error", content: state.failure.message),
               );
             }
           },
