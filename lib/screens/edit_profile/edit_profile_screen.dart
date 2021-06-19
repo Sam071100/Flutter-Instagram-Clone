@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -149,9 +147,7 @@ class EditProfileScreen extends StatelessWidget {
       title: 'Profile Image',
     );
     if (pickedFile != null) {
-      context
-          .read<EditProfileCubit>()
-          .profileImageChanged(File(pickedFile.path));
+      context.read<EditProfileCubit>().profileImageChanged(pickedFile);
     }
   }
 
