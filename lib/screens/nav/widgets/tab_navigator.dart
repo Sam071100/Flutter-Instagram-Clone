@@ -5,6 +5,7 @@ import 'package:instagram_clone/config/custom_router.dart';
 import 'package:instagram_clone/enums/enums.dart';
 import 'package:instagram_clone/repositories/repositories.dart';
 import 'package:instagram_clone/screens/create_post/cubit/create_post_cubit.dart';
+import 'package:instagram_clone/screens/feed/bloc/feed_bloc.dart';
 import 'package:instagram_clone/screens/profile/bloc/profile_bloc.dart';
 import 'package:instagram_clone/screens/screens.dart';
 import 'package:instagram_clone/screens/search/cubit/search_cubit.dart';
@@ -45,7 +46,13 @@ class TabNavigator extends StatelessWidget {
   Widget _getScreen(BuildContext context, BottomNavItem item) {
     switch (item) {
       case BottomNavItem.feed:
-        return FeedScreen();
+        return BlocProvider<FeedBloc>(
+          create: (context) => FeedBloc(
+            postRepository: context.read<PostRepository>(),
+            authBloc: context.read<AuthBloc>(),
+          )..add(FeedFetchPosts()),
+          child: FeedScreen(),
+        );
         break;
       case BottomNavItem.search:
         return BlocProvider<SearchCubit>(
