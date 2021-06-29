@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/blocs/blocs.dart';
 import 'package:instagram_clone/config/custom_router.dart';
+import 'package:instagram_clone/cubits/cubits.dart';
 import 'package:instagram_clone/repositories/repositories.dart';
 import 'package:instagram_clone/screens/screens.dart';
 
@@ -40,6 +41,11 @@ class MyApp extends StatelessWidget {
           BlocProvider<AuthBloc>(
             create: (context) =>
                 AuthBloc(authRepository: context.read<AuthRepository>()),
+          ),
+          BlocProvider<LikedPostsCubit>(
+            create: (context) => LikedPostsCubit(
+                postRepository: context.read<PostRepository>(),
+                authBloc: context.read<AuthBloc>()),
           ),
         ],
         child: MaterialApp(

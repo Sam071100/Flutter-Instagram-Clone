@@ -2,17 +2,22 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/models.dart';
 import 'package:instagram_clone/screens/profile/profile_screen.dart';
+import 'package:instagram_clone/screens/screens.dart';
 import 'package:instagram_clone/widgets/widgets.dart';
 import 'package:instagram_clone/extensions/extensions.dart';
 
 class PostView extends StatelessWidget {
   final Post post;
   final bool isLiked;
+  final VoidCallback onLike;
+  final bool recentlyLiked;
 
   const PostView({
     Key key,
     @required this.post,
     @required this.isLiked,
+    @required this.onLike,
+    this.recentlyLiked = false,
   }) : super(key: key);
 
   @override
@@ -51,7 +56,7 @@ class PostView extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onDoubleTap: () {},
+          onDoubleTap: onLike,
           child: CachedNetworkImage(
             imageUrl: post.imageUrl,
             fit: BoxFit.cover,
@@ -68,13 +73,17 @@ class PostView extends StatelessWidget {
                       color: Colors.red,
                     )
                   : const Icon(Icons.favorite_outline),
-              onPressed: () {},
+              onPressed: onLike,
             ),
             IconButton(
-                icon: const Icon(
-                  Icons.comment_outlined,
-                ),
-                onPressed: () {}),
+              icon: const Icon(
+                Icons.comment_outlined,
+              ),
+              onPressed: () => Navigator.of(context).pushNamed(
+                CommentsScreen.routeName,
+                arguments: CommentsScreenArgs(post: post),
+              ),
+            ),
           ],
         ),
         Padding(
@@ -83,7 +92,7 @@ class PostView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                '${post.likes} likes',
+                '${recentlyLiked ? post.likes + 1 : post.likes} likes',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                 ),

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:instagram_clone/blocs/auth/auth_bloc.dart';
+import 'package:instagram_clone/cubits/cubits.dart';
 import 'package:instagram_clone/models/models.dart';
 import 'package:instagram_clone/repositories/post/post_repository.dart';
 import 'package:meta/meta.dart';
@@ -13,11 +14,15 @@ part 'feed_state.dart';
 class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final PostRepository _postRepository;
   final AuthBloc _authBloc;
-  FeedBloc({
-    @required PostRepository postRepository,
-    @required AuthBloc authBloc,
-  })  : _postRepository = postRepository,
+  final LikedPostsCubit _likedPostsCubit;
+
+  FeedBloc(
+      {@required PostRepository postRepository,
+      @required AuthBloc authBloc,
+      @required LikedPostsCubit likedPostsCubit})
+      : _postRepository = postRepository,
         _authBloc = authBloc,
+        _likedPostsCubit = likedPostsCubit,
         super(FeedState.initial());
 
   @override
@@ -36,6 +41,14 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     try {
       final posts =
           await _postRepository.getUserFeed(userId: _authBloc.state.user.uid);
+
+      _likedPostsCubit.clearAllLikedPosts();
+      final likedPostIds = await _postRepository.getLikePostIds(
+        userId: _authBloc.state.user.uid,
+        posts: posts,
+      );
+      _likedPostsCubit.updateLikedPosts(postIds: likedPostIds);
+
       yield state.copyWith(posts: posts, status: FeedStatus.loaded);
     } catch (err) {
       yield state.copyWith(
@@ -55,6 +68,13 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         lastPostId: lastPostId,
       );
       final updatedPosts = List<Post>.from(state.posts)..addAll(posts);
+
+      final likedPostIds = await _postRepository.getLikePostIds(
+        userId: _authBloc.state.user.uid,
+        posts: posts,
+      );
+      _likedPostsCubit.updateLikedPosts(postIds: likedPostIds);
+
       yield state.copyWith(posts: updatedPosts, status: FeedStatus.loaded);
     } catch (err) {
       yield state.copyWith(
