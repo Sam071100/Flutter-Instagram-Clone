@@ -7,6 +7,7 @@ import 'package:instagram_clone/enums/enums.dart';
 import 'package:instagram_clone/repositories/repositories.dart';
 import 'package:instagram_clone/screens/create_post/cubit/create_post_cubit.dart';
 import 'package:instagram_clone/screens/feed/bloc/feed_bloc.dart';
+import 'package:instagram_clone/screens/notifications/bloc/notifications_bloc.dart';
 import 'package:instagram_clone/screens/profile/bloc/profile_bloc.dart';
 import 'package:instagram_clone/screens/screens.dart';
 import 'package:instagram_clone/screens/search/cubit/search_cubit.dart';
@@ -74,7 +75,13 @@ class TabNavigator extends StatelessWidget {
         );
         break;
       case BottomNavItem.notifications:
-        return NotificationsScreen();
+        return BlocProvider<NotificationsBloc>(
+          create: (context) => NotificationsBloc(
+            notificationRepository: context.read<NotificationRepository>(),
+            authBloc: context.read<AuthBloc>(),
+          ),
+          child: NotificationsScreen(),
+        );
         break;
       case BottomNavItem.profile:
         return BlocProvider(
